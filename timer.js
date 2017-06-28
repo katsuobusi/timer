@@ -2,7 +2,6 @@
     window.onload = function(){
         var nowTime = document.getElementById('nowTime'),
             setTime = document.getElementById('setTime'),
-            setTime2 = [],
             nowNumber,
             setNumber,
             timeIndex = [],
@@ -15,13 +14,12 @@
             dateHours = 0,
             dateMinutes = 0,
             i = 0,
-            i2 = 0,
             flag = true,
             flag2 = false;
 
         document.getElementById('oooo').onclick = function(){
-            if(nowNumber === setNumber){
-                console.log(nowNumber, setNumber, setTime2)
+            if(nowNumber == setNumber){
+                console.log(nowNumber, setNumber)
             }
         }//テストに使ってる〜
 
@@ -74,14 +72,12 @@
             setTime = document.createElement('h2');
             setTime.id = i;
             setTime.value = flag;
-            setTime2.push(setTime.value);
-
             document.getElementById('oue').appendChild(setTime);
             setTime.innerText = timeIndex[i];
             // setTime.onclick = function(){
             //   console.log('ok')
             // }
-            console.log(setTime2);
+            console.log(document.getElementsByTagName('h2').value);
 
             stopButton = document.createElement('button');
             stopButton.innerText = 'とぅるえ';
@@ -106,13 +102,13 @@
             stopButton.onclick = function(setTime){
               //console.log(stopButton.parentNode);
                 if(setTime.target.parentNode.value === true){
-                  setTime2[setTime.target.parentNode.id] = false;
+                  setTime.target.parentNode.value = false;
                   setTime.target.innerText = 'ふぁるせ';
                   console.log(setTime.target.parentNode.value)
                 }else if(setTime.target.parentNode.value === false){
-                  setTime2[setTime.target.parentNode.value] = true;
+                  setTime.target.parentNode.value = true;
                   setTime.target.innerText = 'とぅるえ';
-                  //console.log(setTime.target.parentNode.value);
+                  console.log(setTime.target.parentNode.value);
                 }
             }
             i++;
@@ -121,7 +117,7 @@
         deleteButton.onclick = function(){
           if(flag2 === false){
             flag2 = true;
-            //setTime.children = '削除';
+            stopButton.innerText = '削除';
           }else if(flag === true){
             flag2 = false;
           }
@@ -149,7 +145,7 @@
                 hours = dateHours;
             };
 
-            if(nowNumber === setNumber && setTime2 === true){
+            if(nowNumber === setNumber && document.getElementsByTagName('h2').value === true){
                 ring();
             }//毎秒今の時間を更新して、setTimeと同じか判断する
 
