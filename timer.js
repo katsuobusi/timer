@@ -2,6 +2,7 @@
     window.onload = function(){
         var nowTime = document.getElementById('nowTime'),
             setTime = document.getElementById('setTime'),
+            setBox,
             setTime2 = [],
             setTime2Index,
             nowNumber,
@@ -9,19 +10,28 @@
             timeIndex = [],
             stopButton,
             pushButton = document.getElementById('push'),
-            deleteButton = document.getElementById('delete'),
             hoursValue = document.getElementById('hoursValue'),
             minutesValue = document.getElementById('minutesValue'),
+            deleteButton = document.getElementById('delete'),
             dateSeconds = 0,
             dateHours = 0,
             dateMinutes = 0,
             i = 0,
             i2 = 0,
+            edit,
+            a = document.getElementsByTagName('div'),
             flag = true,
             flag2 = false;
 
         document.getElementById('oooo').onclick = function(){
-          hantei();
+          // var a = document.getElementsByTagName('div');
+          console.log(flag2);
+
+          // var ko = document.createElement('button');
+          // document.getElementById('oooo').appendChild(ko);
+          // ko.addEventListener('click', function(){
+          //   ko.textContent = null;
+          // }, false)
         }//テストに使ってる〜
 
         document.getElementById('hoursPlus').onclick = function(){
@@ -52,17 +62,6 @@
             }
         }//61以上と23以上にしないためのやつ
 
-        function hantei(){
-          if (timeIndex[setTime2Index] == nowNumber) {
-            console.log(timeIndex, setTime2Index);
-            return setTime2Index;
-          }else{
-            console.log('ok');
-            setTime2Index++;
-            return setTime2Index;
-          }
-        }
-
         function ring() {
             document.getElementById('alarm').play();
         }//setTimeとnowTimeが同じだったときの処理
@@ -81,25 +80,71 @@
 
             setNumber = setHours + ':' + setMinutes;
             timeIndex.push(setNumber);
+
+            setBox = document.createElement('div');
+            setBox.id = i;
+            setBox.value = flag;
+            setBox.classList.add('time');
+            document.getElementById('oue').appendChild(setBox);
+
+            setBox.addEventListener('click', function(event){
+              if (flag2 === false) {
+                flag2 = true;
+                event.target.childNodes[1].innerText = '削除';
+                console.log(event.target.childNodes[1]);
+              }else if (flag2 === true) {
+                flag2 = false;
+                console.log(flag2 + '2');
+                if (event.target.value === true) {
+                  event.target.childNodes[1].innerText = 'とぅるえ';
+                }else if(event.target.value === false){
+                  event.target.childNodes[1].innerText = 'ふぁるせ';
+                }
+              }
+            }, false)
+
             setTime = document.createElement('h2');
-            setTime.id = i;
-            setTime.value = flag;
-            setTime2.push(setTime.value);
+            setTime.value = setNumber;
+            setTime2.push(setBox.value);
 
-            document.getElementById('oue').appendChild(setTime);
-            setTime.innerText = timeIndex[i];
-
+            document.getElementById(i).appendChild(setTime);
+            setTime.innerText = setNumber;
 
             setTime2Index = setTime2.indexOf(true);
-            console.log(hantei());
 
-            // setTime.onclick = function(){
-            //   console.log('ok')
-            // }
             stopButton = document.createElement('button');
             stopButton.innerText = 'とぅるえ';
-            stopButton.id = stop;
+            stopButton.id = 'stop';
+            stopButton.value = flag2;
+            stopButton.classList.add('stop2')
             document.getElementById(i).appendChild(stopButton);
+
+              stopButton.addEventListener('click', function (event){
+                event.stopPropagation();
+                  if(flag2 === true) {
+                    edit = confirm('お？');
+                    if(edit === true){
+                      document.getElementById('oue').removeChild(event.target.parentNode);
+                    }
+                  }
+                  else if(event.target.parentNode.value === true) {
+                    event.target.parentNode.style.color = 'red';
+                    event.target.parentNode.value = false;
+                    event.target.innerText = 'ふぁるせ';
+                    console.log(flag2);
+                    // console.log(event.target.parentNode.value);
+                  }else if(event.target.parentNode.value === false){
+                    event.target.parentNode.value = true;
+                    event.target.innerText = 'とぅるえ';
+                    console.log(flag2);
+                    // console.log(event.target.parentNode.value);
+                  }
+              },false);
+
+              deleteButton.addEventListener('click', function(event){
+                document.getElementById('oue').textContent = null;
+              }, false)
+
             // function oopo(stopButton){
             //   console.log(stopButton.target.parentNode)
             // }
@@ -116,29 +161,21 @@
             //       //console.log(stopButton.parentNode.value);
             //     }
             // }
-            stopButton.onclick = function(setTime){
-              //console.log(stopButton.parentNode);
-                if(setTime2[setTime.target.parentNode.id] === true){
-                  setTime2[setTime.target.parentNode.id] = false;
-                  setTime.target.innerText = 'ふぁるせ';
-                  //console.log(setTime.target.parentNode.value)
-                }else if(setTime2[setTime.target.parentNode.id] === false){
-                  setTime2[setTime.target.parentNode.id] = true;
-                  setTime.target.innerText = 'とぅるえ';
-                  //console.log(setTime.target.parentNode.value);
-                }
-            }
+
+            // stopButton.onclick = function(){
+            //   //console.log(stopButton.parentNode);
+            //     if(stopButton.parentNode.value === true){
+            //       stopButton.parentNode.value = false;
+            //       stopButton.innerText = 'ふぁるせ';
+            //       console.log(stopButton)
+            //     }else if(stopButton.parentNode.value === false){
+            //       stopButton.parentNode.value = true;
+            //       stopButton.innerText = 'とぅるえ';
+            //       //console.log(setTime.target.parentNode.value);
+            //     }
+            // }
             i++;
         }//設定する時間の処理
-
-        deleteButton.onclick = function(){
-          if(flag2 === false){
-            flag2 = true;
-            //setTime.children = '削除';
-          }else if(flag === true){
-            flag2 = false;
-          }
-        }
 
         setInterval(function(){
             dateSeconds = new Date().getSeconds();
@@ -162,9 +199,14 @@
                 hours = dateHours;
             };
 
-            if(timeIndex[setTime2Index] == nowNumber){
+            // if(/*nowNumber === */setBox.value === true){
+            //     ring();
+            // }//毎秒今の時間を更新して、setTimeと同じか判断する
+            for (var i2 = 1; i2 < a.length - 3; i2++) {
+              if (a[i2].value === true && a[i2].firstChild.value === nowNumber) {
                 ring();
-            }//毎秒今の時間を更新して、setTimeと同じか判断する
+              }
+            }
 
             nowNumber = hours + ':' + minutes;
 //            Number(nowNumber)
