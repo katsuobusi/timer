@@ -8,6 +8,7 @@
             nowNumber,
             setNumber,
             timeIndex = [],
+            text = document.getElementById('memo'),
             stopButton,
             pushButton = document.getElementById('push'),
             hoursValue = document.getElementById('hoursValue'),
@@ -16,6 +17,7 @@
             dateSeconds = 0,
             dateHours = 0,
             dateMinutes = 0,
+            request,
             i = 0,
             i2 = 0,
             edit,
@@ -25,7 +27,8 @@
 
         document.getElementById('oooo').onclick = function(){
           // var a = document.getElementsByTagName('div');
-          console.log(flag2);
+          console.log(request);
+          console.log(dateSeconds);
 
           // var ko = document.createElement('button');
           // document.getElementById('oooo').appendChild(ko);
@@ -33,6 +36,10 @@
           //   ko.textContent = null;
           // }, false)
         }//テストに使ってる〜
+
+        Notification.requestPermission(function(result){
+          request = result;
+        });
 
         document.getElementById('hoursPlus').onclick = function(){
             plusCounter(hoursValue);
@@ -66,6 +73,13 @@
             document.getElementById('alarm').play();
         }//setTimeとnowTimeが同じだったときの処理
 
+        function ringNotification(zikan){
+          if (request === 'granted' || zikan.value === true) {
+            new Notification("アラーム", {body: zikan.firstChild.value});
+            zikan.value = false;
+          }
+        }
+
         pushButton.onclick = function(){
             if(hoursValue.value <= 9){
                 var setHours = '0' + hoursValue.value;
@@ -88,12 +102,27 @@
             document.getElementById('oue').appendChild(setBox);
 
             setBox.addEventListener('click', function(event){
-              if (flag2 === false) {
-                flag2 = true;
+              if (event.target.tagName === 'H2') {
+                console.log(event.target.parentNode.childNodes[1]);
+                if (event.target.parentNode.childNodes[1].value === 'false') {
+                    event.target.parentNode.childNodes[1].value = true;
+                    event.target.parentNode.childNodes[1].innerText = '削除';
+                }else if (event.target.parentNode.childNodes[1].value === 'true') {
+                    event.target.parentNode.childNodes[1].value = false;
+                    if (event.target.parentNode.value === true) {
+                      event.target.parentNode.childNodes[1].innerText = 'とぅるえ';
+                    }else if(event.target.parentNode.value === false){
+                      event.target.parentNode.childNodes[1].innerText = 'ふぁるせ';
+                    }
+                }
+                return false;
+              }
+              if(event.target.childNodes[1].value === 'false') {
+                event.target.childNodes[1].value = true;
                 event.target.childNodes[1].innerText = '削除';
-                console.log(event.target.childNodes[1]);
-              }else if (flag2 === true) {
-                flag2 = false;
+                console.log(event.target.className);
+              }else if (event.target.childNodes[1].value === 'true') {
+                event.target.childNodes[1].value = false;
                 console.log(flag2 + '2');
                 if (event.target.value === true) {
                   event.target.childNodes[1].innerText = 'とぅるえ';
@@ -105,12 +134,16 @@
 
             setTime = document.createElement('h2');
             setTime.value = setNumber;
-            setTime2.push(setBox.value);
 
             document.getElementById(i).appendChild(setTime);
             setTime.innerText = setNumber;
 
             setTime2Index = setTime2.indexOf(true);
+
+            // memo = document.createElement('strong');
+            // memo.innerText = text.value;
+            // document.getElementById(i).appendChild(memo);
+            // document.createElement('p')
 
             stopButton = document.createElement('button');
             stopButton.innerText = 'とぅるえ';
@@ -121,19 +154,19 @@
 
               stopButton.addEventListener('click', function (event){
                 event.stopPropagation();
-                  if(flag2 === true) {
+                  if(event.target.value === 'true') {
                     edit = confirm('お？');
                     if(edit === true){
                       document.getElementById('oue').removeChild(event.target.parentNode);
                     }
-                  }
-                  else if(event.target.parentNode.value === true) {
+                  }else if(event.target.parentNode.value === true) {
                     event.target.parentNode.style.color = 'red';
                     event.target.parentNode.value = false;
                     event.target.innerText = 'ふぁるせ';
                     console.log(flag2);
                     // console.log(event.target.parentNode.value);
                   }else if(event.target.parentNode.value === false){
+                    event.target.parentNode.style.color = '#000';
                     event.target.parentNode.value = true;
                     event.target.innerText = 'とぅるえ';
                     console.log(flag2);
@@ -141,9 +174,9 @@
                   }
               },false);
 
-              deleteButton.addEventListener('click', function(event){
+            deleteButton.onclick = function(){
                 document.getElementById('oue').textContent = null;
-              }, false)
+              }
 
             // function oopo(stopButton){
             //   console.log(stopButton.target.parentNode)
@@ -199,14 +232,12 @@
                 hours = dateHours;
             };
 
-            // if(/*nowNumber === */setBox.value === true){
-            //     ring();
-            // }//毎秒今の時間を更新して、setTimeと同じか判断する
             for (var i2 = 1; i2 < a.length - 3; i2++) {
               if (a[i2].value === true && a[i2].firstChild.value === nowNumber) {
                 ring();
+                ringNotification(a[i2]);
               }
-            }
+            }//div要素がtrueかつh2が今の時間と同じ数字なら音がなる
 
             nowNumber = hours + ':' + minutes;
 //            Number(nowNumber)

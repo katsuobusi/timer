@@ -1,0 +1,7 @@
+{
+  "name": "tuutiDemo",
+  "short_name": "tuuti",
+  "start_url": "./",
+  "display": "standalone",
+  "gcm_sender_id": "267064308232"
+}
